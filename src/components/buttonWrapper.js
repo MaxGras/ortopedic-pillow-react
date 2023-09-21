@@ -13,6 +13,7 @@ export default function ButtonWrapperOrder({ positionValue = "none", topValue = 
   const [open, setOpen] = useState(false);
   const [helperOpenModal, setHelperOpenModal] = useState(false);
   const [showOrderPickers, setShowOrderPickers] = useState([{ id: uuidv4(), isVisible: true }]);
+  const [fetchSuccess, setFetchSuccess] = useState(false)
   const [dataValue, setNewData] = useState({
     telephoneNumber: '',
     initials: '',
@@ -30,12 +31,15 @@ export default function ButtonWrapperOrder({ positionValue = "none", topValue = 
   const handleClose = () => {
     setOpen(false);
   }
-  const handleHelperClose = ()=>{
+  const handleHelperClose = () => {
     setHelperOpenModal(false);
   }
   const spanClassName = " text-[0.9em] font-[500] leading-[150%]";
   const strInputClassName = "outline-0 w-[85%] px-[5%] py-[2%] rounded-[27px] bg-[#FFFFFF]/50 overflow-scroll"
-
+  const handleSuccessFetch = () => {
+    setOpen(false);
+    setFetchSuccess(true);
+  }
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
     setNewData((prevData) => ({
@@ -69,9 +73,10 @@ export default function ButtonWrapperOrder({ positionValue = "none", topValue = 
         })
       })
         .then((response) => response.json())
+        .then(handleSuccessFetch())
     } else {
-     setHelperOpenModal(true);
-    } 
+      setHelperOpenModal(true);
+    }
 
   }
   return (
@@ -95,6 +100,15 @@ export default function ButtonWrapperOrder({ positionValue = "none", topValue = 
         },
 
       }}><span className="w-full">Оформити замовлення</span></Button>
+      <Modal open={fetchSuccess} onClose={() => setFetchSuccess(false)} onClick={()=>setFetchSuccess(false)} className="flex justify-center items-center">
+        <Box className="bg-[#CFD3DB] font-[700] px-[3%] rounded-[27px] h-[30vh] w-[40vh] flex flex-col items-center justify-evenly ">
+          <p className="font-[600] w-[80%] text-center   text-[#3C4152]">Менеджер зв’яжеться з Вами для підтвердження замовлення протягом дня</p>
+          <p className=" text-center text-[#F6AC38]">Дякуємо, що залишили замовлення,
+            Ми Вам неодмінно зателефонуємо</p>
+         <div> <span className="text-[#0082D1]">Гарного дня</span>
+          <span className="block text-[#F6AC38]">Слава Україні!</span></div>
+        </Box>
+      </Modal>
       <Modal open={open} onClose={handleClose} className="flex justify-center items-center">
         <Box className={"bg-[#CFD3DB] rounded-[27px]  w-[80%] gap-[1.3vh] flex flex-col  py-[5%] items-center "}>
 
@@ -144,7 +158,7 @@ export default function ButtonWrapperOrder({ positionValue = "none", topValue = 
 
           }}><span className="w-full">Відправити замовлення</span></Button>
           <Modal open={helperOpenModal} onClose={handleHelperClose} onClick={handleHelperClose} className="flex justify-center items-center">
-            <Box className={"bg-[#CFD3DB] rounded-[27px]  w-[80%] py-[5%] flex justify-evenly items-center "}><WarningAmberIcon/> <span className={spanClassName}>Невірно набраний Номер Телефону!</span></Box>
+            <Box className={"bg-[#CFD3DB] rounded-[27px]  w-[80%] py-[5%] flex justify-evenly items-center "}><WarningAmberIcon /> <span className={spanClassName}>Невірно набраний Номер Телефону!</span></Box>
           </Modal>
         </Box>
       </Modal>
